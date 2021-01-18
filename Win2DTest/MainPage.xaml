@@ -15,6 +15,6 @@
             <RowDefinition Height="271*"/>
             <RowDefinition Height="229*"/>
         </Grid.RowDefinitions>
-        <canvas:CanvasControl x:Name="canvas" Draw="canvas_Draw" Grid.RowSpan="2"/>
+        <canvas:CanvasAnimatedControl x:Name="canvas" Draw="canvas_DrawAnimated" CreateResources="canvas_CreateResources"/>
     </Grid>
 </Page>

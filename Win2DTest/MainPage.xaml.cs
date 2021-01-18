@@ -49,19 +49,40 @@ namespace Win2DTest
             
         }
 
+        
         private void canvas_Draw(Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasDrawEventArgs args)
         {
-            /*
-            args.DrawingSession.DrawText("Hello, World!", 100, 100, Colors.White);
-            args.DrawingSession.DrawCircle(125, 125, 100, Colors.Green);
-            args.DrawingSession.DrawLine(0, 0, 50, 200, Colors.Red);
-            */
-            for (int i = 0; i < 25; i++)
+            
+            args.DrawingSession.DrawImage(blur);
+            
+        }
+
+        private void canvas_DrawAnimated(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
+        {
+            float radius = (float)(1 + Math.Sin(args.Timing.TotalTime.TotalSeconds)) * 10f;
+            blur.BlurAmount = radius;
+            args.DrawingSession.DrawImage(blur);
+        }
+
+        GaussianBlurEffect blur;
+        private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
+        {
+            CanvasCommandList cl = new CanvasCommandList(sender);
+            using (CanvasDrawingSession clds = cl.CreateDrawingSession())
             {
-                args.DrawingSession.DrawText("Hello, World!", RndPosition(), Color.FromArgb(255, RndByte(), RndByte(), RndByte()));
-                args.DrawingSession.DrawCircle(RndPosition(), RndRadius(), Color.FromArgb(255, RndByte(), RndByte(), RndByte()));
-                args.DrawingSession.DrawLine(RndPosition(), RndPosition(), Color.FromArgb(255, RndByte(), RndByte(), RndByte()));
+                for (int i = 0; i < 100; i++)
+                {
+                    clds.DrawText("Hello, World!", RndPosition(), Color.FromArgb(255, RndByte(), RndByte(), RndByte()));
+                    clds.DrawCircle(RndPosition(), RndRadius(), Color.FromArgb(255, RndByte(), RndByte(), RndByte()));
+                    clds.DrawLine(RndPosition(), RndPosition(), Color.FromArgb(255, RndByte(), RndByte(), RndByte()));
+                }
             }
+
+            blur = new GaussianBlurEffect()
+            {
+                Source = cl,
+                BlurAmount = 10.0f
+            };
         }
 
         void Page_Unloaded(object sender, RoutedEventArgs e)
